@@ -1,7 +1,7 @@
 package com.myohanhtet.webcrawler.controller;
 
 import com.myohanhtet.webcrawler.model.Exchange;
-import com.myohanhtet.webcrawler.service.CrawlerSeviceImpl;
+import com.myohanhtet.webcrawler.service.CrawlerSevice;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,7 @@ import java.text.ParseException;
 public class ExchangeController {
 
     @Autowired
-    CrawlerSeviceImpl crawlerSevice;
+    CrawlerSevice crawlerSevice;
 
     private static final Logger logger = Logger.getLogger(ExchangeController.class);
 

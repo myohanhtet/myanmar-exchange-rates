@@ -3,7 +3,7 @@ package com.myohanhtet.webcrawler.service.impl;
 import com.myohanhtet.webcrawler.model.Buy;
 import com.myohanhtet.webcrawler.model.Exchange;
 import com.myohanhtet.webcrawler.model.Sell;
-import com.myohanhtet.webcrawler.service.CrawlerSeviceImpl;
+import com.myohanhtet.webcrawler.service.CrawlerSevice;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
-public class CrawlerService implements CrawlerSeviceImpl {
+public class CrawlerServiceImpl implements CrawlerSevice {
 
     @Value("${kbz.url}")
     private String kbzUrl;
@@ -25,6 +25,9 @@ public class CrawlerService implements CrawlerSeviceImpl {
 
     @Value("${yoma.url}")
     private String yomaUrl;
+
+    @Value("${uab.url}")
+    private String uabUrl;
 
     @Override
     public Exchange getAll(String bank) throws IOException, ParseException {
@@ -43,6 +46,10 @@ public class CrawlerService implements CrawlerSeviceImpl {
             case "aya":
                 Document ayaDoc = document(ayaUrl);
                 exchange = aya(bankName,ayaDoc);
+                break;
+            case "uab":
+                Document uabDoc = document(uabUrl);
+                exchange = uab(bankName,uabDoc);
             default:
                 Document defaultDoc = document(yomaUrl);
                 yoma(bankName,defaultDoc);
@@ -147,6 +154,15 @@ public class CrawlerService implements CrawlerSeviceImpl {
         kbz.setSell(sell);
 
         return kbz;
+    }
+
+    @Override
+    public Exchange uab(String bankName, Document doc) {
+
+        String dateString = doc.select("[class='block block-block block-8 block-block-8 even block-without-title'] p").text();
+        System.out.println(dateString);
+        return null;
+
     }
 
     public Document document(String url){
