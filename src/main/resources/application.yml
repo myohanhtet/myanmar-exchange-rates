@@ -1,0 +1,10 @@
+server:
+  port: 8181
+kbz:
+  url: "https://www.kbzbank.com/en/"
+
+aya:
+  url: "https://www.ayabank.com/en_US/"
+
+yoma:
+  url: "https://yomabank.com/mm/business/rates"
