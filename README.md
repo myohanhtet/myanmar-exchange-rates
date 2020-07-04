@@ -4,7 +4,7 @@
 - Aya
 - Kbz
 
-##Get All Rates
+###Get All Rates
 **Request :**
 `Get: http://localhost:8181/{bank}`
 
@@ -30,7 +30,7 @@
     }
 ```
 
-##Get Single Rate
+###Get Single Rate
 **Request:**
 `Get: http://localhost:8181/{bank}/{type}`
 
