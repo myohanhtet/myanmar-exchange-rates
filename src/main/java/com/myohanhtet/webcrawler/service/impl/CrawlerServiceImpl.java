@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import static com.myohanhtet.webcrawler.constant.Banks.*;
 
 @Service
 public class CrawlerServiceImpl implements CrawlerSevice {
@@ -97,11 +98,11 @@ public class CrawlerServiceImpl implements CrawlerSevice {
         Exchange yoma = new Exchange();
         String dateString = doc.select(".page-content-section .mb3:nth-child(3) .exrate-date").text();
 
-        yoma.setBank("Yoma");
+        yoma.setBank(YOMA_NAME);
         yoma.setDate(getDate("MMM dd, yyyy (E)",dateString));
 
         Buy buy = new Buy();
-        Map<String,String> yomaExchange = exchange("yoma");
+        Map<String,String> yomaExchange = exchange(YOMA_NAME);
         buy.setUSD(yomaExchange.get("usdBuy"));
         buy.setEUR(yomaExchange.get("eurBuy"));
         buy.setSGD(yomaExchange.get("sgdBuy"));
@@ -126,13 +127,13 @@ public class CrawlerServiceImpl implements CrawlerSevice {
 
         Exchange aya = new Exchange();
 
-        aya.setBank("AYA");
+        aya.setBank(AYA_NAME);
 
         String dateString =  doc.select(".tablepress.tablepress-id-104  .row-1 > .column-1").text()
                 .replaceAll("st|nd|rd|th|[\\[\\](){}]", "");
         aya.setDate(getDate("d MMMM yyyy hh:mm aaa",dateString));
 
-        Map<String,String> ayaExchange = exchange("aya");
+        Map<String,String> ayaExchange = exchange(AYA_NAME);
         Buy buy = new Buy();
         buy.setUSD(ayaExchange.get("usdBuy"));
         buy.setEUR(ayaExchange.get("eryBuy"));
@@ -151,9 +152,9 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     @Override
     public Exchange kbz(String bankName,Document doc) throws ParseException {
 
-        Map<String,String> kbzRate = exchange("kbz");
+        Map<String,String> kbzRate = exchange(KBZ_NAME);
         Exchange kbz = new Exchange();
-        kbz.setBank("KBZ");
+        kbz.setBank(KBZ_NAME);
         String dateString = doc.select(".inner-column-1.kadence-column_6e8702-29.wp-block-kadence-column > .kt-inside-inner-col > .has-text-color.has-vivid-red-color > strong")
                 .text()
                 .replaceAll("([A-Z][a-z \\s\\-()]*)", "");
@@ -183,7 +184,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
                 .text().substring(14).replaceAll("[^a-zA-Z0-9]","");
 
         Exchange uab = new Exchange();
-        uab.setBank("UAB");
+        uab.setBank(UAB_NAME);
         uab.setDate(getDate("ddMMMyyyy",dateString));
 
         Buy buy = new Buy();
@@ -234,8 +235,8 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     public Map<String, String> exchange(String bank){
         String reateRegex = "([^0-9]|\\s)+";
 
-        switch (bank.toLowerCase()){
-            case "yoma":
+        switch (bank){
+            case YOMA_NAME:
                 Document yomadoc = document(yomaUrl);
                 Map<String, String> yoma = new HashMap<String, String>();
                 yoma.put("usdBuy",yomadoc.select(".page-content-section .exratedetailTlb:nth-child(4) tr:nth-of-type(2) .buyrate").text());
@@ -249,7 +250,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
                 yoma.put("myrSell",yomadoc.select(".page-content-section tr:nth-of-type(6) .sellrate").text());
                 yoma.put("thbSell",yomadoc.select(".page-content-section tr:nth-of-type(7) .sellrate").text());
                 return yoma;
-            case "aya":
+            case AYA_NAME:
                 Document ayadoc = document(ayaUrl);
                 Map<String,String> aya = new HashMap<String, String>();
                 aya.put("usdBuy",ayadoc.select("[class] [class='row-2'] [class='column-3']").text());
@@ -259,7 +260,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
                 aya.put("eruSell",ayadoc.select("[class] [class='row-3'] [class='column-4']").text());
                 aya.put("sgdSell",ayadoc.select("[class] [class='row-4'] [class='column-4']").text());
                 return aya;
-            case "kbz":
+            case KBZ_NAME:
                 Document kbzdoc = document(kbzUrl);
                 Map<String,String> kbz = new HashMap<String, String>();
                 kbz.put("usdBuy",kbzdoc.select(".inner-column-1.kadence-column_f853c8-08.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(2)")
