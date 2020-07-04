@@ -1,11 +1,14 @@
 package com.myohanhtet.webcrawler.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.myohanhtet.webcrawler.model.Buy;
 import com.myohanhtet.webcrawler.model.Exchange;
 import com.myohanhtet.webcrawler.model.Sell;
 import com.myohanhtet.webcrawler.service.CrawlerSevice;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +20,7 @@ import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import static com.myohanhtet.webcrawler.constant.Banks.*;
@@ -49,6 +50,8 @@ public class CrawlerServiceImpl implements CrawlerSevice {
             .version(HttpClient.Version.HTTP_1_1)
             .connectTimeout(Duration.ofSeconds(10))
             .build();
+    @Autowired
+    ObjectMapper mapper;
 
     @Override
     public Exchange getAll(String bank) throws IOException, ParseException, InterruptedException, ExecutionException {
@@ -85,11 +88,38 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     }
 
     @Override
-    public String getOne(String bank, String type) {
-        if(bank.equalsIgnoreCase("yoma")){
-            System.out.println("Hello yoma "+ type);
+    public HashMap<String, ObjectNode> getOne(String bank, String type) throws ParseException {
+
+        Map<String,String> yomaExchange = exchange(YOMA_NAME);
+        ObjectNode objectNode = mapper.createObjectNode();
+        switch (type.toLowerCase()){
+            case "usd":
+                objectNode.put("buy", yomaExchange.get("usdBuy"));
+                objectNode.put("sell", yomaExchange.get("usdSell"));
+                break;
+            case "eur":
+                objectNode.put("buy", yomaExchange.get("eurBuy"));
+                objectNode.put("sell", yomaExchange.get("eurSell"));
+                break;
+            case "sgd":
+                objectNode.put("buy", yomaExchange.get("sgdBuy"));
+                objectNode.put("sell", yomaExchange.get("sgdSell"));
+                break;
+            case "myr":
+                objectNode.put("buy", yomaExchange.get("myrBuy"));
+                objectNode.put("sell", yomaExchange.get("myrSell"));
+                break;
+            case "thb":
+                objectNode.put("buy", yomaExchange.get("thbBuy"));
+                objectNode.put("sell", yomaExchange.get("thbSell"));
+                break;
         }
-        return null;
+
+        HashMap<String, ObjectNode> returnMap = new HashMap<>();
+        returnMap.put(type, objectNode);
+
+        return returnMap;
+
     }
 
     @Override
@@ -232,7 +262,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     }
 
     @Override
-    public Map<String, String> exchange(String bank){
+    public Map<String, String> exchange(String bank) throws ParseException {
         String reateRegex = "([^0-9]|\\s)+";
 
         switch (bank){

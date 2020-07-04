@@ -4,6 +4,7 @@
 - Aya
 - Kbz
 
+##Get All Rates
 **Request :**
 `Get: http://localhost:8181/{bank}`
 
@@ -29,5 +30,16 @@
     }
 ```
 
+##Get Single Rate
+**Request:**
+`Get: http://localhost:8181/{bank}/{type}`
 
-
+**Response**
+```json
+  {
+    "usd": {
+        "buy": "1358",
+        "sell": "1365"
+    }
+}
+```

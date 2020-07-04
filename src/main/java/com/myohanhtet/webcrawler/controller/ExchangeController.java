@@ -1,5 +1,6 @@
 package com.myohanhtet.webcrawler.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.myohanhtet.webcrawler.model.Exchange;
 import com.myohanhtet.webcrawler.service.CrawlerSevice;
 import org.apache.log4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -31,8 +33,8 @@ public class ExchangeController {
 
     @RequestMapping(value = "/{bank}/{type}")
     @ResponseBody
-    public void findOne(@PathVariable("bank") String bank,@PathVariable("type") String type){
-        crawlerSevice.getOne(bank,type);
+    public HashMap<String, ObjectNode> findOne(@PathVariable("bank") String bank, @PathVariable("type") String type) throws ParseException {
+        return crawlerSevice.getOne(bank,type);
     }
 
 }
