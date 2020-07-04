@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 public class ExchangeController {
@@ -22,9 +24,15 @@ public class ExchangeController {
 
     @RequestMapping(value = "/{bank}", method = RequestMethod.GET)
     @ResponseBody
-    public Exchange getAll(@PathVariable("bank") String bank) throws IOException, ParseException {
+    public Exchange getAll(@PathVariable("bank") String bank) throws IOException, ParseException, InterruptedException, ExecutionException {
         logger.info("Request Bamk: "+ bank);
         return crawlerSevice.getAll(bank);
+    }
+
+    @RequestMapping(value = "/{bank}/{type}")
+    @ResponseBody
+    public void findOne(@PathVariable("bank") String bank,@PathVariable("type") String type){
+        crawlerSevice.getOne(bank,type);
     }
 
 }
