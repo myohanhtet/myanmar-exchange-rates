@@ -1,10 +1,15 @@
 ## myanmar exchange rates
-
+**Banks**
 - Yoma
 - Aya
 - Kbz
 
-### Get All Rates
+**Type**
+- usd
+- sgd
+- eur
+- thb
+- myr
 
 **Request :**
 `Get: http://localhost:8181/{bank}`

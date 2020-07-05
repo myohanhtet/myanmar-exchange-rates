@@ -90,33 +90,84 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     @Override
     public HashMap<String, ObjectNode> getOne(String bank, String type) throws ParseException {
 
-        Map<String,String> yomaExchange = exchange(YOMA_NAME);
-        ObjectNode objectNode = mapper.createObjectNode();
-        switch (type.toLowerCase()){
-            case "usd":
-                objectNode.put("buy", yomaExchange.get("usdBuy"));
-                objectNode.put("sell", yomaExchange.get("usdSell"));
-                break;
-            case "eur":
-                objectNode.put("buy", yomaExchange.get("eurBuy"));
-                objectNode.put("sell", yomaExchange.get("eurSell"));
-                break;
-            case "sgd":
-                objectNode.put("buy", yomaExchange.get("sgdBuy"));
-                objectNode.put("sell", yomaExchange.get("sgdSell"));
-                break;
-            case "myr":
-                objectNode.put("buy", yomaExchange.get("myrBuy"));
-                objectNode.put("sell", yomaExchange.get("myrSell"));
-                break;
-            case "thb":
-                objectNode.put("buy", yomaExchange.get("thbBuy"));
-                objectNode.put("sell", yomaExchange.get("thbSell"));
-                break;
+        HashMap<String, ObjectNode> returnMap = new HashMap<>();
+
+        if (bank.equalsIgnoreCase("yoma")){
+
+            Map<String,String> yomaExchange = exchange(YOMA_NAME);
+            ObjectNode objectNode = mapper.createObjectNode();
+            switch (type.toLowerCase()){
+                case "usd":
+                    objectNode.put("buy", yomaExchange.get("usdBuy"));
+                    objectNode.put("sell", yomaExchange.get("usdSell"));
+                    break;
+                case "eur":
+                    objectNode.put("buy", yomaExchange.get("eurBuy"));
+                    objectNode.put("sell", yomaExchange.get("eurSell"));
+                    break;
+                case "sgd":
+                    objectNode.put("buy", yomaExchange.get("sgdBuy"));
+                    objectNode.put("sell", yomaExchange.get("sgdSell"));
+                    break;
+                case "myr":
+                    objectNode.put("buy", yomaExchange.get("myrBuy"));
+                    objectNode.put("sell", yomaExchange.get("myrSell"));
+                    break;
+                case "thb":
+                    objectNode.put("buy", yomaExchange.get("thbBuy"));
+                    objectNode.put("sell", yomaExchange.get("thbSell"));
+                    break;
+            }
+            returnMap.put(type, objectNode);
+
+        } else if(bank.equalsIgnoreCase("aya")){
+
+            Map<String,String> ayaExchange = exchange(AYA_NAME);
+            ObjectNode objectNode = mapper.createObjectNode();
+            switch (type.toLowerCase()){
+                case "usd":
+                    objectNode.put("buy", ayaExchange.get("usdBuy"));
+                    objectNode.put("sell", ayaExchange.get("usdSell"));
+                    break;
+                case "eur":
+                    objectNode.put("buy", ayaExchange.get("eurBuy"));
+                    objectNode.put("sell", ayaExchange.get("eurSell"));
+                    break;
+                case "sgd":
+                    objectNode.put("buy", ayaExchange.get("sgdBuy"));
+                    objectNode.put("sell", ayaExchange.get("sgdSell"));
+                    break;
+            }
+            returnMap.put(type, objectNode);
+
+        } else if (bank.equalsIgnoreCase("kbz")){
+            Map<String,String> kbzExchange = exchange(KBZ_NAME);
+            ObjectNode objectNode = mapper.createObjectNode();
+            switch (type.toLowerCase()){
+                case "usd":
+                    objectNode.put("buy", kbzExchange.get("usdBuy"));
+                    objectNode.put("sell", kbzExchange.get("usdSell"));
+                    break;
+                case "eur":
+                    objectNode.put("buy", kbzExchange.get("eurBuy"));
+                    objectNode.put("sell", kbzExchange.get("eurSell"));
+                    break;
+                case "sgd":
+                    objectNode.put("buy", kbzExchange.get("sgdBuy"));
+                    objectNode.put("sell", kbzExchange.get("sgdSell"));
+                    break;
+                case "thb":
+                    objectNode.put("buy", kbzExchange.get("thbBuy"));
+                    objectNode.put("sell", kbzExchange.get("thbSell"));
+                    break;
+            }
+            returnMap.put(type, objectNode);
+        } else {
+            Map<String,String> yomaExchange = exchange(YOMA_NAME);
+            ObjectNode objectNode = mapper.createObjectNode();
+            returnMap.put(type, objectNode);
         }
 
-        HashMap<String, ObjectNode> returnMap = new HashMap<>();
-        returnMap.put(type, objectNode);
 
         return returnMap;
 
@@ -166,7 +217,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
         Map<String,String> ayaExchange = exchange(AYA_NAME);
         Buy buy = new Buy();
         buy.setUSD(ayaExchange.get("usdBuy"));
-        buy.setEUR(ayaExchange.get("eryBuy"));
+        buy.setEUR(ayaExchange.get("eruBuy"));
         buy.setSGD(ayaExchange.get("sgdBuy"));
         aya.setBuy(buy);
 
@@ -192,14 +243,14 @@ public class CrawlerServiceImpl implements CrawlerSevice {
 
         Buy buy = new Buy();
         buy.setUSD(kbzRate.get("usdBuy"));
-        buy.setEUR(kbzRate.get("eruBuy"));
+        buy.setEUR(kbzRate.get("eurBuy"));
         buy.setSGD(kbzRate.get("sgdBuy"));
         buy.setTHB(kbzRate.get("thbBuy"));
         kbz.setBuy(buy);
 
         Sell sell = new Sell();
         sell.setUSD(kbzRate.get("usdSell"));
-        sell.setEUR(kbzRate.get("eruSell"));
+        sell.setEUR(kbzRate.get("eurSell"));
         sell.setSGD(kbzRate.get("sgdSell"));
         sell.setTHB(kbzRate.get("thbSell"));
         kbz.setSell(sell);
@@ -296,7 +347,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
                 kbz.put("usdBuy",kbzdoc.select(".inner-column-1.kadence-column_f853c8-08.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(2)")
                     .text()
                     .replaceAll(reateRegex, ""));
-                kbz.put("eruBuy",kbzdoc.select(".inner-column-3.kadence-column_2c52f6-af.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(2)")
+                kbz.put("eurBuy",kbzdoc.select(".inner-column-3.kadence-column_2c52f6-af.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(2)")
                         .text()
                         .replaceAll(reateRegex, ""));
                 kbz.put("sgdBuy",kbzdoc.select(".inner-column-2.kadence-column_52cef0-90.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(2)")
@@ -308,7 +359,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
                 kbz.put("usdSell", kbzdoc.select(".inner-column-1.kadence-column_f853c8-08.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(3)")
                         .text()
                         .replaceAll(reateRegex, ""));
-                kbz.put("eruSell", kbzdoc.select(".inner-column-3.kadence-column_2c52f6-af.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(3)")
+                kbz.put("eurSell", kbzdoc.select(".inner-column-3.kadence-column_2c52f6-af.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(3)")
                         .text()
                         .replaceAll(reateRegex, ""));
                 kbz.put("sgdSell", kbzdoc.select(".inner-column-2.kadence-column_52cef0-90.wp-block-kadence-column > .kt-inside-inner-col > p:nth-of-type(3)")
