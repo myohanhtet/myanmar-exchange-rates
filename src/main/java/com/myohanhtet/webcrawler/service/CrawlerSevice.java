@@ -20,6 +20,6 @@ public interface CrawlerSevice {
     public Exchange kbz(String bankName,Document doc) throws IOException, ParseException;
     public Exchange uab(String bankName,Document doc) throws ParseException;
     public Exchange agd(String bankName,Document doc) throws IOException, InterruptedException, ExecutionException;
-    public Exchange cbbank(String bankName,Document doc);
+    public Exchange cbbank(String bankName,Document doc) throws IOException;
     public Map<String,String> exchange(String bank) throws ParseException;
 }

@@ -16,13 +16,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
 import static com.myohanhtet.webcrawler.constant.Banks.*;
 
 @Service
@@ -54,7 +55,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     ObjectMapper mapper;
 
     @Override
-    public Exchange getAll(String bank) throws IOException, ParseException, InterruptedException, ExecutionException {
+    public Exchange getAll(String bank) throws ParseException {
         Exchange exchange = null;
 
         String bankName = bank.toLowerCase();
@@ -88,7 +89,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     }
 
     @Override
-    public HashMap<String, ObjectNode> getOne(String bank, String type) throws ParseException {
+    public HashMap<String, ObjectNode> getOne(String bank, String type) {
 
         HashMap<String, ObjectNode> returnMap = new HashMap<>();
 
@@ -180,7 +181,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
         String dateString = doc.select(".page-content-section .mb3:nth-child(3) .exrate-date").text();
 
         yoma.setBank(YOMA_NAME);
-        yoma.setDate(getDate("MMM dd, yyyy (E)",dateString));
+        yoma.setDate(getDate("MMM dd, yyyy (E) • HH:mm",dateString));
 
         Buy buy = new Buy();
         Map<String,String> yomaExchange = exchange(YOMA_NAME);
@@ -240,7 +241,6 @@ public class CrawlerServiceImpl implements CrawlerSevice {
                 .text()
                 .replaceAll("([A-Z][a-z \\s\\-()]*)", "");
         kbz.setDate(getDate("dd/MM/yyyy",dateString));
-
         Buy buy = new Buy();
         buy.setUSD(kbzRate.get("usdBuy"));
         buy.setEUR(kbzRate.get("eurBuy"));
@@ -277,43 +277,30 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     }
 
     @Override
-    public Exchange agd(String bankName, Document doc) throws InterruptedException, ExecutionException {
+    public Exchange agd(String bankName, Document doc) {
 
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .GET()
-//                //https://www.agdbank.com/ajax?currency=api
-//                .uri(URI.create("http://dummy.restapiexample.com/api/v1/employees"))
-//                .build();
-//
-//        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://www.agdbank.com/ajax?currency=api"))
-//                .header("Content-Type", "application/json")
+                .header("Content-Type", "application/json")
                 .build();
 
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,HttpResponse.BodyHandlers.ofString());
-
-        System.out.println(response.get().body());
-
-        // print response headers
-        //HttpHeaders headers = response.headers();
-        //headers.map().forEach((k, v) -> System.out.println(k + ":" + v));
-        System.out.println("Got it: ");
+//        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,HttpResponse.BodyHandlers.ofString());
 
         return null;
     }
 
     @Override
     public Exchange cbbank(String bankName, Document doc) {
-        System.out.println(doc.select(".fontpage-feature-body > h4:nth-of-type(1)").text());
-        System.out.println("JJJJ");
+
+
         return null;
+
     }
 
     @Override
-    public Map<String, String> exchange(String bank) throws ParseException {
+    public Map<String, String> exchange(String bank) {
         String reateRegex = "([^0-9]|\\s)+";
 
         switch (bank){
