@@ -12,7 +12,7 @@
 - myr
 
 **Request :**
-`Get: http://localhost:8181/{bank}`
+`Get: http://localhost:8181/api/v1/{bank}`
 
 **Response :**
 ```json
@@ -39,7 +39,7 @@
 ### Get Single Rate
 
 **Request:**
-`Get: http://localhost:8181/{bank}/{type}`
+`Get: http://localhost:8181/api/v1/{bank}/{type}`
 
 **Response**
 ```json

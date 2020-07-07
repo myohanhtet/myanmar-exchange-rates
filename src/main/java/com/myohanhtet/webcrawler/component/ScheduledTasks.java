@@ -10,7 +10,6 @@ import java.util.Date;
 @Component
 public class ScheduledTasks {
     private static final Logger logger = Logger.getLogger(ScheduledTasks.class);
-
 //    @Scheduled(fixedRate = 5000)
 //    public void scheduleTaskWithFixedRate() {
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -18,5 +17,4 @@ public class ScheduledTasks {
 //        String strDate = sdf.format(now);
 //        logger.info("Fixed Rate Task :: Execution Time - {}"+ strDate);
 //    }
-
 }
