@@ -3,16 +3,15 @@ package com.myohanhtet.webcrawler.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 
 import java.io.Serializable;
 
 @Data
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Buy implements Serializable {
+public class Buy  {
 
-        private static final long serialVersionUID = 1L;
+//        private static final long serialVersionUID = 1L;
 
         private String USD;
         private String EUR;

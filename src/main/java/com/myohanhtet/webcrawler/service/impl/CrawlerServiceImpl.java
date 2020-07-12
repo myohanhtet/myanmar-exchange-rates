@@ -14,15 +14,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import static com.myohanhtet.webcrawler.constant.Banks.*;
 
@@ -47,10 +44,10 @@ public class CrawlerServiceImpl implements CrawlerSevice {
     @Value("${agd.url}")
     private String agdUrl;
 
-    private static final HttpClient httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_1_1)
-            .connectTimeout(Duration.ofSeconds(10))
-            .build();
+//    private static final HttpClient httpClient = HttpClient.newBuilder()
+//            .version(HttpClient.Version.HTTP_1_1)
+//            .connectTimeout(Duration.ofSeconds(10))
+//            .build();
     @Autowired
     ObjectMapper mapper;
 

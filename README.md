@@ -1,10 +1,11 @@
 ## myanmar exchange rates
-**Banks**
+
+**Available Banks**
 - Yoma
 - Aya
 - Kbz
 
-**Type**
+**Available Type**
 - usd
 - sgd
 - eur

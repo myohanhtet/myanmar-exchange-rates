@@ -1,18 +1,21 @@
 server:
   port: 8181
 
-spring:
-  redis:
-    host: localhost
-    database: 0
-    port: 6379
-    password:
-    lettuce:
-      pool:
-        max-active: 8
-        max-wait: 1
-        max-idle: 8
-        min-idle: 0
+#spring:
+#  redis:
+#    host: localhost
+#    database: 0
+#    port: 6379
+#    password:
+#    lettuce:
+#      pool:
+#        max-active: 8
+#        max-wait: 1
+#        max-idle: 8
+#        min-idle: 0
+#  cache:
+#    redis:
+#      time-to-live: 60000
 kbz:
   url: "https://www.kbzbank.com/en/"
 
