@@ -18,7 +18,7 @@ public interface CrawlerSevice {
     public Exchange yoma(String bankName, Document doc) throws ParseException, IOException;
     public Exchange aya(String bankName,Document doc) throws IOException, ParseException;
     public Exchange kbz(String bankName,Document doc) throws IOException, ParseException;
-    public Exchange uab(String bankName,Document doc) throws ParseException;
+    public Exchange uab(String bankName,Document doc) throws IOException,ParseException;
     public Exchange agd(String bankName,Document doc) throws IOException, InterruptedException, ExecutionException;
     public Exchange cbbank(String bankName,Document doc) throws IOException;
     public Map<String,String> exchange(String bank) throws ParseException;

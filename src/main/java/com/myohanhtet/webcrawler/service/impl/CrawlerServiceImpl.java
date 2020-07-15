@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,16 +71,20 @@ public class CrawlerServiceImpl implements CrawlerSevice {
             case "uab":
                 Document uabDoc = document(uabUrl);
                 exchange = uab(bankName,uabDoc);
+                break;
             case "cbbank":
                 Document cbDoc = document(cbUrl);
                 exchange = cbbank(bankName,cbDoc);
+                break;
             case "agd":
                 Document agdDoc = document(agdUrl);
                 exchange = agd(bankName,agdDoc);
+                break;
             default:
                 Document defaultDoc = document(yomaUrl);
-                yoma(bankName,defaultDoc);
+                exchange = yoma(bankName,defaultDoc);
         }
+
         return exchange;
     }
 
@@ -158,6 +161,25 @@ public class CrawlerServiceImpl implements CrawlerSevice {
                     objectNode.put("buy", kbzExchange.get("thbBuy"));
                     objectNode.put("sell", kbzExchange.get("thbSell"));
                     break;
+            }
+            returnMap.put(type, objectNode);
+        } else if (bank.equalsIgnoreCase("uab")) {
+            Map<String,String> uabExchange = exchange(UAB_NAME);
+            ObjectNode objectNode = mapper.createObjectNode();
+            switch (type.toLowerCase()) {
+                case "usd":
+                    objectNode.put("buy", uabExchange.get("usdBuy"));
+                    objectNode.put("sell", uabExchange.get("usdSell"));
+                    break;
+                case "eur":
+                    objectNode.put("buy",uabExchange.get("eurBuy"));
+                    objectNode.put("sell",uabExchange.get("eurSell"));
+                    break;
+                case "sgd":
+                    objectNode.put("buy",uabExchange.get("sgdBuy"));
+                    objectNode.put("sell",uabExchange.get("sgdSell"));
+                    break;
+
             }
             returnMap.put(type, objectNode);
         } else {
@@ -251,37 +273,41 @@ public class CrawlerServiceImpl implements CrawlerSevice {
         sell.setSGD(kbzRate.get("sgdSell"));
         sell.setTHB(kbzRate.get("thbSell"));
         kbz.setSell(sell);
-
         return kbz;
     }
 
     @Override
     public Exchange uab(String bankName, Document doc) throws ParseException {
 
+        Map<String,String> uabRate = exchange(UAB_NAME);
         String dateString = doc.select(".ex-date")
                 .text().substring(14).replaceAll("[^a-zA-Z0-9]","");
-
         Exchange uab = new Exchange();
         uab.setBank(UAB_NAME);
         uab.setDate(getDate("ddMMMyyyy",dateString));
-
         Buy buy = new Buy();
-        System.out.println(doc.select(".ex-usd").text());
-        buy.setUSD(doc.select(".ex-usd").text());
+        buy.setUSD(uabRate.get("usdBuy"));
+        buy.setEUR(uabRate.get("eurBuy"));
+        buy.setSGD(uabRate.get("sgdBuy"));
+        uab.setBuy(buy);
+        Sell sell = new Sell();
+        sell.setUSD(uabRate.get("usdSell"));
+        sell.setEUR(uabRate.get("eurSell"));
+        sell.setSGD(uabRate.get("sgdSell"));
 
+        uab.setSell(sell);
         return uab;
-
     }
 
     @Override
     public Exchange agd(String bankName, Document doc) {
 
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create("https://www.agdbank.com/ajax?currency=api"))
-                .header("Content-Type", "application/json")
-                .build();
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .GET()
+//                .uri(URI.create("https://www.agdbank.com/ajax?currency=api"))
+//                .header("Content-Type", "application/json")
+//                .build();
 
 //        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,HttpResponse.BodyHandlers.ofString());
 
@@ -298,6 +324,7 @@ public class CrawlerServiceImpl implements CrawlerSevice {
 
     @Override
     public Map<String, String> exchange(String bank) {
+
         String reateRegex = "([^0-9]|\\s)+";
 
         switch (bank){
@@ -353,7 +380,19 @@ public class CrawlerServiceImpl implements CrawlerSevice {
                         .text()
                         .replaceAll(reateRegex, ""));
                 return kbz;
-
+            case UAB_NAME:
+                Document uabdoc = document(uabUrl);
+                Map<String,String> uab = new HashMap<String, String>();
+                String[] usdArray = uabdoc.select(".ex-usd").text().split(",");
+                uab.put("usdBuy",usdArray[0].replaceAll(reateRegex,""));
+                uab.put("usdSell",usdArray[1].replaceAll(reateRegex,""));
+                String[] eurArray = uabdoc.select(".ex-eur").text().split(",");
+                uab.put("eurBuy",eurArray[0].replaceAll(reateRegex,""));
+                uab.put("eurSell",eurArray[1].replaceAll(reateRegex,""));
+                String[] sgdArray = uabdoc.select(".ex-sgd").text().split(",");
+                uab.put("sgdBuy",sgdArray[0].replaceAll(reateRegex,""));
+                uab.put("sgdSell",sgdArray[1].replaceAll(reateRegex,""));
+                return uab;
         }
         return null;
     }

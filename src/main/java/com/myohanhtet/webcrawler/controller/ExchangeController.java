@@ -28,6 +28,7 @@ public class ExchangeController {
 //    @Cacheable(value="exchange-key")
     @ResponseBody
     public Exchange getAll(@PathVariable("bank") String bank) throws IOException, ParseException, InterruptedException, ExecutionException {
+
         return crawlerSevice.getAll(bank);
     }
 
