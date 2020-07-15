@@ -4,6 +4,7 @@
 - Yoma
 - Aya
 - Kbz
+- UAB
 
 **Available Type**
 - usd
