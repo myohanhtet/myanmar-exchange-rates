@@ -231,8 +231,10 @@ public class CrawlerServiceImpl implements CrawlerSevice {
         aya.setBank(AYA_NAME);
 
         String dateString =  doc.select(".tablepress.tablepress-id-104  .row-1 > .column-1").text()
-                .replaceAll("st|nd|rd|th|[\\[\\](){}]", "");
-        aya.setDate(getDate("d MMMM yyyy hh:mm aaa",dateString));
+                .replaceAll("[0-9]st|[0-9]nd|[0-9]rd|[0-9]th|[\\[\\](){}]", "");
+
+        aya.setDate(getDate("dd MMMMM yyyy hh:mm a",dateString));
+//        aya.setDate(getDate("d MMMM yyyy hh:mm",dateString));
 
         Map<String,String> ayaExchange = exchange(AYA_NAME);
         Buy buy = new Buy();
